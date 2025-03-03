@@ -15,6 +15,14 @@ This is a simple **Library Management System** implemented in C++. It allows use
 - **Book, Magazine, DVD**: Inherit from `LibraryItem` with specific attributes.
 - **LibrarySystem**: Manages the collection of books, magazines, and DVDs.
 
+🚀 **Object-Oriented Programming (OOP) Concepts:**  
+  - **Encapsulation**: Data members are private, accessed through getter/setter functions.  
+  - **Constructors & Destructors**: Used for initialization and memory management.  
+  - **Inheritance**: `Book`, `Magazine`, and `DVD` inherit from `LibraryItem`.  
+  - **Static Member Functions**: Used for shared functionality across instances.  
+  - **Data Hiding**: Restricting direct access to data members.  
+  - **Array of Pointers to Objects**: Managing dynamic collections of items.  
+
 ## 🔧 How to Use
 1. **Compile and run** the program.
 2. Choose an option from the menu:
