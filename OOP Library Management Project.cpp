@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 
 using namespace std;
 
@@ -121,7 +121,7 @@ class LibrarySystem {
 	int magazineCount = 0;
 	int dvdCount = 0;
 public:
-	LibrarySystem(){}
+	LibrarySystem() {}
 	~LibrarySystem() {
 		for (int i = 0; i < bookCount; i++) {
 			delete books[i];
