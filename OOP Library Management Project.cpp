@@ -3,12 +3,14 @@
 using namespace std;
 
 class LibraryItem {
+	static int num_of_items;
 	string  title;
 	bool availability;
 public:
 	LibraryItem() {
 		title = "";
 		availability = true;
+		num_of_items++;
 	}
 	void set_title(string  title) {
 		this->title = title;
@@ -22,6 +24,9 @@ public:
 	bool get_availability() {
 		return availability;
 	}
+	static int get_num_of_items() {
+		return num_of_items;
+	}
 	void display1() {
 		cout << "title =" << get_title() << endl;
 		cout << "availability =" <<
@@ -29,6 +34,7 @@ public:
 
 	}
 };
+int LibraryItem::num_of_items = 0;
 class Book :public LibraryItem {
 	string author;
 	int ISBN;
