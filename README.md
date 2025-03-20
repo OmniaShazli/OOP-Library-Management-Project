@@ -16,12 +16,15 @@ This is a simple **Library Management System** implemented in C++. It allows use
 - **LibrarySystem**: Manages the collection of books, magazines, and DVDs.
 
 ## **Object-Oriented Programming (OOP) Concepts:**  
-  - **Encapsulation**: Data members are private, accessed through getter/setter functions.  
+  - **Encapsulation**: All data members are private, accessed through getter/setter functions.  
   - **Constructors & Destructors**: Used for initialization and memory management.  
-  - **Inheritance**: `Book`, `Magazine`, and `DVD` inherit from `LibraryItem`.  
+  - **Inheritance**: `Book`, `Magazine`, and `DVD` inherit from `LibraryItem`.
+  - **Polymorphism**: Allows treating all library items in the same way while handling their specific behaviors at runtime.
+  - **Abstraction**: Focuses on essential features of library items without showing internal details, making the system easier to use and extend.  
   - **Static Member Functions**: Used for shared functionality across instances.  
   - **Data Hiding**: Restricting direct access to data members.  
-  - **Array of Pointers to Objects**: Managing dynamic collections of items.  
+  - **Array of Pointers to Objects**: Managing dynamic collections of items.
+  - **Dynamic Cast**: Used to safely convert base class pointers to derived class pointers when accessing specific features of a library item. 
 
 ## How to Use
 1. **Compile and run** the program.
