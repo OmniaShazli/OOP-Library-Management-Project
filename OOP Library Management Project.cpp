@@ -1,17 +1,17 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 class LibraryItem {
+protected:
 	static int num_of_items;
 	string  title;
 	bool availability;
 public:
-	LibraryItem() {
-		title = "";
-		availability = true;
-		num_of_items++;
-	}
+	LibraryItem() :title(""), availability(true){ num_of_items++; }
+	virtual ~LibraryItem() { num_of_items--; }
+	
 	void set_title(string  title) {
 		this->title = title;
 	}
@@ -27,22 +27,15 @@ public:
 	static int get_num_of_items() {
 		return num_of_items;
 	}
-	void display1() {
-		cout << "title =" << get_title() << endl;
-		cout << "availability =" <<
-			(availability ? "Available" : "Not Available") << endl;
-
-	}
+	virtual void display() = 0;
 };
 int LibraryItem::num_of_items = 0;
 class Book :public LibraryItem {
 	string author;
 	int ISBN;
 public:
-	Book() {
-		author = "";
-		ISBN = 1234;
-	}
+	Book() :author(""), ISBN(123){}
+
 	void set_author(string  author) {
 		this->author = author;
 	}
@@ -56,7 +49,8 @@ public:
 		return ISBN;
 	}
 	void display() {
-		display1();
+		cout << "title =" << get_title() << endl;
+		cout << "availability =" <<(availability ? "Available" : "Not Available") << endl;
 		cout << "author= " << author
 			<< endl << "ISBN= " << ISBN << endl;
 	}
@@ -65,10 +59,8 @@ class Magazine :public LibraryItem {
 	int issueNumber;
 	string publisher;
 public:
-	Magazine() {
-		issueNumber = 0;
-		publisher = "";
-	}
+	Magazine() :issueNumber(0), publisher(""){}
+	
 	void set_issueNumber(int  issueNumber) {
 		this->issueNumber = issueNumber;
 	}
@@ -82,7 +74,8 @@ public:
 		return publisher;
 	}
 	void display() {
-		display1();
+		cout << "title =" << get_title() << endl;
+		cout << "availability =" <<(availability ? "Available" : "Not Available") << endl;
 		cout << "issueNumber= " << issueNumber
 			<< " " << "publisher= " << publisher << endl;
 	}
@@ -91,10 +84,8 @@ class DVD :public LibraryItem {
 	string director;
 	int duration;
 public:
-	DVD() {
-		director = "";
-		duration = 0;
-	}
+	DVD() :director(""), duration(0){}
+	
 	void set_director(string  director) {
 		this->director = director;
 	}
@@ -108,29 +99,24 @@ public:
 		return duration;
 	}
 	void display() {
-		display1();
+		cout << "title =" << get_title() << endl;
+		cout << "availability =" <<(availability ? "Available" : "Not Available") << endl;
 		cout << "director= " << director
 			<< " " << "duration= " << duration << endl;
 	}
 };
 class LibrarySystem {
-	Book* books[100];
-	Magazine* magazines[100];
-	DVD* dvds[100];
-	int bookCount = 0;
-	int magazineCount = 0;
-	int dvdCount = 0;
+
+	LibraryItem* Array[100];
+	static int Count;
+	int BookCount = 0;
+	int MagazineCount = 0;
+	int DVDCount = 0;
 public:
 	LibrarySystem() {}
-	~LibrarySystem() {
-		for (int i = 0; i < bookCount; i++) {
-			delete books[i];
-		}
-		for (int i = 0; i < magazineCount; i++) {
-			delete magazines[i];
-		}
-		for (int i = 0; i < dvdCount; i++) {
-			delete dvds[i];
+	virtual ~LibrarySystem() {
+		for (int i = 0; i < Count; i++) {
+			delete Array[i];
 		}
 	}
 	void addBook() {
@@ -138,19 +124,22 @@ public:
 		cout << "How many books do you want to add ? ";
 		cin >> n;
 		for (int i = 0; i < n; i++) {
-			books[bookCount] = new Book;
+			Array[Count] = new Book;
+			Book* curbook = dynamic_cast<Book*>(Array[Count]);
 			cout << "Enter the book title.";
 			string s;
-			cin >> s;
-			books[bookCount]->set_title(s);
+			cin.ignore();
+			getline(cin, s, '\n');
+			Array[Count]->set_title(s);
 			cout << "Enter the book author .";
-			cin >> s;
-			books[bookCount]->set_author(s);
+			getline(cin, s);
+			curbook->set_author(s);
 			cout << "Enter the book ISBN .";
 			int I;
 			cin >> I;
-			books[bookCount]->set_ISBN(I);
-			bookCount++;
+			curbook->set_ISBN(I);
+			Count++;
+			BookCount++;
 			cout << "Done..." << endl;
 		}
 	}
@@ -159,19 +148,22 @@ public:
 		cout << "How many magazines do you want to add ? ";
 		cin >> n;
 		for (int i = 0; i < n; i++) {
-			magazines[magazineCount] = new Magazine;
+			Array[Count] = new Magazine;
+			Magazine* mcur = dynamic_cast<Magazine*>(Array[Count]);
 			cout << "Enter the magazine title.";
 			string s;
-			cin >> s;
-			magazines[magazineCount]->set_title(s);
+			cin.ignore();
+			getline(cin, s, '\n');
+			Array[Count]->set_title(s);
 			cout << "Enter the magazine issueNumber .";
 			int I;
 			cin >> I;
-			magazines[magazineCount]->set_issueNumber(I);
+			mcur->set_issueNumber(I);
 			cout << "Enter the magazine publisher .";
-			cin >> s;
-			magazines[magazineCount]->set_publisher(s);
-			magazineCount++;
+			getline(cin, s);
+			mcur->set_publisher(s);
+			Count++;
+			MagazineCount++;
 			cout << "Done..." << endl;
 		}
 	}
@@ -180,19 +172,22 @@ public:
 		cout << "How many DVDs do you want to add ? ";
 		cin >> n;
 		for (int i = 0; i < n; i++) {
-			dvds[dvdCount] = new DVD;
+			Array[Count] = new DVD;
+			DVD* dcur = dynamic_cast<DVD*>(Array[Count]);
 			cout << "Enter the DVD title.";
 			string s;
-			cin >> s;
-			dvds[dvdCount]->set_title(s);
+			cin.ignore();
+			getline(cin, s, '\n');
+			Array[Count]->set_title(s);
 			cout << "Enter the DVD director.";
-			cin >> s;
-			dvds[dvdCount]->set_director(s);
+			getline(cin, s);
+			dcur->set_director(s);
 			cout << "Enter the DVD duration .";
 			int I;
 			cin >> I;
-			dvds[dvdCount]->set_duration(I);
-			dvdCount++;
+			dcur->set_duration(I);
+			Count++;
+			DVDCount++;
 			cout << "Done..." << endl;
 		}
 	}
@@ -207,13 +202,14 @@ public:
 		{
 			cout << "Enter the book title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s, '\n');
 			bool ch = 0;
-			for (int i = 0; i < bookCount; i++) {
-				if (s == books[i]->get_title()) {
-					if (books[i]->get_availability() == true) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == true) {
 						ch = 1;
-						books[i]->set_availability(false);
+						Array[i]->set_availability(false);
 						cout << "Borrowed successfully" << endl;
 					}
 				}
@@ -228,13 +224,14 @@ public:
 		{
 			cout << "Enter the magazine title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s);
 			bool ch = 0;
-			for (int i = 0; i < magazineCount; i++) {
-				if (s == magazines[i]->get_title()) {
-					if (magazines[i]->get_availability() == true) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == true) {
 						ch = 1;
-						magazines[i]->set_availability(false);
+						Array[i]->set_availability(false);
 						cout << "Borrowed successfully" << endl;
 					}
 				}
@@ -248,13 +245,14 @@ public:
 		{
 			cout << "Enter the dvd title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s, '\n');
 			bool ch = 0;
-			for (int i = 0; i < dvdCount; i++) {
-				if (s == dvds[i]->get_title()) {
-					if (dvds[i]->get_availability() == true) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == true) {
 						ch = 1;
-						dvds[i]->set_availability(false);
+						Array[i]->set_availability(false);
 						cout << "Borrowed successfully" << endl;
 					}
 				}
@@ -282,13 +280,14 @@ public:
 		{
 			cout << "Enter the book title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s, '\n');
 			bool ch = 0;
-			for (int i = 0; i < bookCount; i++) {
-				if (s == books[i]->get_title()) {
-					if (books[i]->get_availability() == false) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == false) {
 						ch = 1;
-						books[i]->set_availability(true);
+						Array[i]->set_availability(true);
 						cout << "Returned successfully" << endl;
 					}
 				}
@@ -303,13 +302,14 @@ public:
 		{
 			cout << "Enter the magazine title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s, '\n');
 			bool ch = 0;
-			for (int i = 0; i < magazineCount; i++) {
-				if (s == magazines[i]->get_title()) {
-					if (magazines[i]->get_availability() == false) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == false) {
 						ch = 1;
-						magazines[i]->set_availability(true);
+						Array[i]->set_availability(true);
 						cout << "Returned successfully" << endl;
 					}
 				}
@@ -323,13 +323,14 @@ public:
 		{
 			cout << "Enter the dvd title" << endl;
 			string s;
-			cin >> s;
+			cin.ignore();
+			getline(cin, s, '\n');
 			bool ch = 0;
-			for (int i = 0; i < dvdCount; i++) {
-				if (s == dvds[i]->get_title()) {
-					if (dvds[i]->get_availability() == false) {
+			for (int i = 0; i < Count; i++) {
+				if (s == Array[i]->get_title()) {
+					if (Array[i]->get_availability() == false) {
 						ch = 1;
-						dvds[i]->set_availability(true);
+						Array[i]->set_availability(true);
 						cout << "Returned successfully" << endl;
 					}
 				}
@@ -357,38 +358,47 @@ public:
 			switch (n)
 			{
 			case 1:
-				if (bookCount == 0) {
+				if (BookCount == 0) {
 					cout << "No books available" << endl;
 				}
 				else {
 					cout << "Books in the library: " << endl;
-					for (int i = 0; i < bookCount; i++) {
-						books[i]->display();
-						cout << "----------------------" << endl;
+					for (int i = 0; i < Count; i++) {
+					Book* curbook = dynamic_cast<Book*>(Array[i]);
+						if (curbook) {
+							Array[i]->display();
+							cout << "----------------------" << endl;
+						}
 					}
 				}
 				break;
 			case 2:
-				if (magazineCount == 0) {
+				if (MagazineCount == 0) {
 					cout << "No magazines available" << endl;
 				}
 				else {
 					cout << "magazines in the library: " << endl;
-					for (int i = 0; i < magazineCount; i++) {
-						magazines[i]->display();
-						cout << "----------------------" << endl;
+					for (int i = 0; i < Count; i++) {
+					Magazine* mcur = dynamic_cast<Magazine*>(Array[i]);
+						if (mcur) {
+							Array[i]->display();
+							cout << "----------------------" << endl;
+						}
 					}
 				}
 				break;
 			case 3:
-				if (dvdCount == 0) {
+				if (DVDCount == 0) {
 					cout << "No DVDs available" << endl;
 				}
 				else {
 					cout << "DVDs in the library: " << endl;
-					for (int i = 0; i < dvdCount; i++) {
-						dvds[i]->display();
-						cout << "----------------------" << endl;
+					for (int i = 0; i < Count; i++) {
+							DVD* dcur = dynamic_cast<DVD*>(Array[i]);
+							if (dcur) {
+							Array[i]->display();
+							cout << "----------------------" << endl;
+						}
 					}
 				}
 				break;
@@ -402,6 +412,7 @@ public:
 		}
 	}
 };
+int LibrarySystem::Count = 0;;
 int main()
 {
 	LibrarySystem op1;
